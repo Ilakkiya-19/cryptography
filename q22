@@ -1,0 +1,58 @@
+#include <stdio.h>
+
+typedef struct {
+    unsigned char key[10];
+} SDESKey;
+
+void sdes_encrypt(unsigned char *input, unsigned char *output, SDESKey *key) {
+    // S-DES encryption logic here
+    // You'll need to implement the S-DES encryption algorithm
+}
+
+void sdes_decrypt(unsigned char *input, unsigned char *output, SDESKey *key) {
+    // S-DES decryption logic here
+    // You'll need to implement the S-DES decryption algorithm
+}
+
+int main() {
+    SDESKey key = {{0x1F, 0x1D}}; // Binary key: 01111 11101
+    unsigned char iv = 0xAA;      // Binary initialization vector: 1010 1010
+    unsigned char plaintext[] = {0x01, 0x23}; // Binary plaintext: 0000 0001 0010 0011
+    unsigned char ciphertext[2];
+    unsigned char decrypted[2];
+
+    // Encrypt the plaintext in CBC mode
+    for (int i = 0; i < sizeof(plaintext); i++) {
+        ciphertext[i] = plaintext[i] ^ iv; // XOR with IV
+        sdes_encrypt(&ciphertext[i], &ciphertext[i], &key);
+        iv = ciphertext[i];
+    }
+
+    // Decrypt the ciphertext in CBC mode
+    iv = 0xAA;
+    for (int i = 0; i < sizeof(ciphertext); i++) {
+        sdes_decrypt(&ciphertext[i], &decrypted[i], &key);
+        decrypted[i] ^= iv; // XOR with IV
+        iv = ciphertext[i];
+    }
+
+    printf("Plaintext: ");
+    for (int i = 0; i < sizeof(plaintext); i++) {
+        printf("%02x ", plaintext[i]);
+    }
+    printf("\n");
+
+    printf("Ciphertext: ");
+    for (int i = 0; i < sizeof(ciphertext); i++) {
+        printf("%02x ", ciphertext[i]);
+    }
+    printf("\n");
+
+    printf("Decrypted: ");
+    for (int i = 0; i < sizeof(decrypted); i++) {
+        printf("%02x ", decrypted[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
